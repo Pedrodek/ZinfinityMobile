@@ -32,6 +32,7 @@ import kotlinx.coroutines.*
 import kotlin.math.roundToInt
 import java.io.File
 import java.io.FileInputStream
+import java.io.FileNotFoundException
 import java.security.MessageDigest
 
 
@@ -219,15 +220,13 @@ class MainActivity : AppCompatActivity() {
     //Big Files & Duplicates
     fun getFileHash(file: File): String {
         val digest = MessageDigest.getInstance("MD5")
-        val inputStream = file.inputStream()
-        val buffer = ByteArray(1024)
-        var bytesRead: Int
-
-        while (inputStream.read(buffer).also { bytesRead = it } != -1) {
-            digest.update(buffer, 0, bytesRead)
+        file.inputStream().use { inputStream ->
+            val buffer = ByteArray(1024)
+            var bytesRead: Int
+            while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+                digest.update(buffer, 0, bytesRead)
+            }
         }
-
-        inputStream.close()
         val hashBytes = digest.digest()
         return hashBytes.joinToString("") { "%02x".format(it) }
     }
@@ -235,26 +234,70 @@ class MainActivity : AppCompatActivity() {
     fun iterateFilesAndHashInBackground(dir: File) {
         coroutineScope.launch(Dispatchers.IO) {
             iterateFilesAndHash(dir)
+            delay(200)
         }
     }
+//------------------------------------------------------------------------------------------------------------------
+//  Anotações de arquivos que podem ser interessantes
+
+    // /system/app/GameOptimizer/GameOptimizer.apk
+
+    // Arquivo: /system/priv-app/GoogleFeedback/GoogleFeedback.apk, Hash: b87b96253ed6e743cc54bd759e55c7a5, Tamanho: 490,20 KB
+    // 2024-09-13 09:13:07.944 17458-17649 System.out              com.example.zinfinity                I  Arquivo: /system/priv-app/GoogleFeedback/oat/arm64/GoogleFeedback.odex, Hash: 8c73ed46df16d326740b4c7d6004b8fe, Tamanho: 80,70 KB
+    // 2024-09-13 09:13:07.960 17458-17649 System.out              com.example.zinfinity                I  Arquivo: /system/priv-app/GoogleFeedback/oat/arm64/GoogleFeedback.vdex, Hash: b5fed3f5668713cc37c23b1a7d89602d, Tamanho: 493,18 KB
+
+//------------------------------------------------------------------------------------------------------------------
 
     fun iterateFilesAndHash(dir: File) {
         // Listar todos os arquivos e diretórios dentro do diretório atual
         val files = dir.listFiles()
 
         files?.forEach { file ->
-            if ((checkSelfPermission("READ_EXTERNAL_STORAGE") == PackageManager.PERMISSION_GRANTED)) { //checar
-                if (file.isDirectory) {
-                    // Se for um diretório, chamar a função
-                    iterateFilesAndHash(file)
+            try {
+                // Checar se temos permissão para ler o arquivo ou diretório
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
+
+                    if (file.isDirectory) {
+                        // Se for um diretório, chamar a função recursivamente
+                        iterateFilesAndHash(file)
+                    } else {
+                        // Se for um arquivo, calcular o hash e obter o tamanho
+                        val fileHash = getFileHash(file)
+                        val fileSize = getFileSize(file.length())
+                        println("Arquivo: ${file.absolutePath}, Hash: $fileHash, Tamanho: $fileSize")
+                    }
                 } else {
-                    // Se for um arquivo, calcular o hash
-                    val fileHash = getFileHash(file)
-                    println("Arquivo: ${file.absolutePath}, Hash: $fileHash")
+                    println("Permissão negada para acessar ${file.absolutePath}")
                 }
+            } catch (e: SecurityException) {
+                // Ignorar diretórios ou arquivos que não podem ser acessados por falta de permissão
+                println("Acesso negado a: ${file.absolutePath}, erro de permissão: ${e.message}")
+            } catch (e: FileNotFoundException) {
+                // Ignorar arquivos ou diretórios não encontrados
+                println("Arquivo ou diretório não encontrado: ${file.absolutePath}, erro: ${e.message}")
+            } catch (e: Exception) {
+                // Capturar outras exceções para evitar que o código quebre
+                println("Erro ao acessar ${file.absolutePath}: ${e.message}")
             }
         }
     }
+
+    // Função para converter o tamanho do arquivo para KB, MB ou GB
+    fun getFileSize(sizeInBytes: Long): String {
+        val sizeInKb = sizeInBytes / 1024.0
+        val sizeInMb = sizeInKb / 1024.0
+        val sizeInGb = sizeInMb / 1024.0
+
+        return when {
+            sizeInGb >= 1 -> String.format("%.2f GB", sizeInGb)
+            sizeInMb >= 1 -> String.format("%.2f MB", sizeInMb)
+            else -> String.format("%.2f KB", sizeInKb)
+        }
+    }
+
+
+
 
     private fun requestStoragePermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)

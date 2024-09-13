@@ -94,21 +94,21 @@
         android:id="@+id/KILL"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="276dp"
+        android:layout_marginEnd="29dp"
         android:layout_marginBottom="240dp"
         android:backgroundTint="#A000E4"
-        android:text="KILL"
+        android:text="CPU Awake"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
         android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="51dp"
+        android:layout_marginStart="32dp"
         android:layout_marginBottom="240dp"
         android:backgroundTint="#A000E4"
-        android:text="Find"
+        android:text="Scan Test"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -127,8 +127,8 @@
         android:id="@+id/tvFiles"
         android:layout_width="192dp"
         android:layout_height="56dp"
-        android:layout_marginTop="21dp"
-        android:layout_marginEnd="220dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="200dp"
         android:text="TextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button2" />
@@ -137,8 +137,8 @@
         android:id="@+id/Lgpdbutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="48dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="28dp"
         android:text="LGPD"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvFiles" />
@@ -147,8 +147,8 @@
         android:id="@+id/imageView2"
         android:layout_width="74dp"
         android:layout_height="66dp"
-        android:layout_marginTop="88dp"
-        android:layout_marginEnd="44dp"
+        android:layout_marginTop="108dp"
+        android:layout_marginEnd="52dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/KILL"
         app:srcCompat="@mipmap/ic_acess2_round" />
