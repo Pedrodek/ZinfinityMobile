@@ -139,9 +139,19 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="48dp"
         android:layout_marginTop="32dp"
-        android:text="Button"
+        android:text="LGPD"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvFiles" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="74dp"
+        android:layout_height="66dp"
+        android:layout_marginTop="88dp"
+        android:layout_marginEnd="44dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/KILL"
+        app:srcCompat="@mipmap/ic_acess2_round" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
