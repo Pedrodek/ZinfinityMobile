@@ -42,6 +42,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var ramUsageTextView: TextView
     private lateinit var progressCpu: ProgressBar
     private lateinit var progressRam: ProgressBar
+    private lateinit var Lgpdbutton: Button
     private lateinit var killButton: Button
     private lateinit var doubleButton: Button
     private lateinit var tvFiles: TextView
@@ -67,6 +68,7 @@ class MainActivity : AppCompatActivity() {
         progressCpu = findViewById(R.id.progressCpu)
         progressRam = findViewById(R.id.progressRam)
 
+        Lgpdbutton = findViewById(R.id.Lgpdbutton)
         killButton = findViewById(R.id.KILL)
         doubleButton = findViewById(R.id.button2)
 
@@ -76,6 +78,11 @@ class MainActivity : AppCompatActivity() {
 
         // Start the periodic updates using coroutines
         startPeriodicUpdates()
+
+        Lgpdbutton.setOnClickListener {
+            val intent = Intent(this, LgpdActivity::class.java)
+            startActivity(intent)
+        }
 
         // Set the KILL button click listener
         killButton.setOnClickListener {

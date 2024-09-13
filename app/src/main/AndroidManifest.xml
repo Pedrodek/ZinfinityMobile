@@ -23,6 +23,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Zinfinity"
         tools:targetApi="31">
+        <activity android:name=".LgpdActivity" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
