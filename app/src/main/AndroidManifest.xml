@@ -2,16 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"
+    <uses-permission
+        android:name="android.permission.QUERY_ALL_PACKAGES"
         tools:ignore="QueryAllPackagesPermission" />
     <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-
-
-
 
     <application
         android:allowBackup="true"
@@ -23,6 +22,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Zinfinity"
         tools:targetApi="31">
+        <activity
+            android:name=".IntelActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Zinfinity" />
         <activity android:name=".LgpdActivity" />
         <activity
             android:name=".MainActivity"
@@ -33,6 +36,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <service
             android:name=".background.OptimizationService"
             android:foregroundServiceType="location|dataSync|connectedDevice"

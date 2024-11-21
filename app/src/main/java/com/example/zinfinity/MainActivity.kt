@@ -1,37 +1,22 @@
 package com.example.zinfinity
 
-import android.app.ActivityManager
 import android.Manifest
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
-import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
-import android.graphics.drawable.Drawable
-import android.os.BatteryManager
 import android.os.Bundle
-import android.os.Environment
-import android.os.StatFs
-import android.os.Build
 import android.os.PowerManager
-import android.provider.DocumentsContract.Root
 import android.widget.Button
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.PermissionChecker
 import com.example.zinfinity.background.OptimizationService
 import com.example.zinfinity.background.scheduleOptimizationJob
-import com.example.zinfinity.hardwareMonitors.CpuMonitor
 import com.example.zinfinity.hardwareMonitors.ProcessKiller
-import com.example.zinfinity.hardwareMonitors.RamMonitor
 import kotlinx.coroutines.*
-import kotlin.math.roundToInt
 import java.io.File
-import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.security.MessageDigest
 
@@ -39,18 +24,15 @@ import java.security.MessageDigest
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var cpuUsageTextView: TextView
-    private lateinit var ramUsageTextView: TextView
-    private lateinit var progressCpu: ProgressBar
-    private lateinit var progressRam: ProgressBar
+
     private lateinit var Lgpdbutton: Button
+    private lateinit var Intelbutton: Button
     private lateinit var killButton: Button
     private lateinit var doubleButton: Button
     private lateinit var tvFiles: TextView
 
     private lateinit var processKiller: ProcessKiller
-    private lateinit var cpuMonitor: CpuMonitor
-    private lateinit var ramMonitor: RamMonitor
+
 
     private val REQUEST_CODE = 100 // Código de solicitação único
 
@@ -62,26 +44,23 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
 
-        cpuUsageTextView = findViewById(R.id.tvCpuUsage)
-        ramUsageTextView = findViewById(R.id.tvRamUsage)
         tvFiles = findViewById(R.id.tvFiles)
 
-        progressCpu = findViewById(R.id.progressCpu)
-        progressRam = findViewById(R.id.progressRam)
-
         Lgpdbutton = findViewById(R.id.Lgpdbutton)
+        Intelbutton = findViewById(R.id.Intelbutton)
+
         killButton = findViewById(R.id.KILL)
         doubleButton = findViewById(R.id.button2)
 
         processKiller = ProcessKiller(this)
-        cpuMonitor = CpuMonitor(this)
-        ramMonitor = RamMonitor(this)
-
-        // Start the periodic updates using coroutines
-        startPeriodicUpdates()
 
         Lgpdbutton.setOnClickListener {
             val intent = Intent(this, LgpdActivity::class.java)
+            startActivity(intent)
+        }
+
+        Intelbutton.setOnClickListener {
+            val intent = Intent(this, IntelActivity::class.java)
             startActivity(intent)
         }
 
@@ -106,33 +85,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun startPeriodicUpdates() {
-        coroutineScope.launch {
-            while (true) {
-                updateUI()
-                delay(1000) // Delay of 1 second
-            }
-        }
-    }
 
-
-    private suspend fun updateUI() = withContext(Dispatchers.IO) {
-        val cpuUsage = cpuMonitor.getAppCpuUsage() // Pode ser pesado
-        val (availableMegs, percentAvail) = ramMonitor.getRamUsage() // Operação de RAM
-        val batteryInfo = getBatteryInfo() // Leitura de bateria
-        val storageInfo = getStorageInfo() // Leitura de armazenamento
-
-        // Atualiza a UI no dispatcher Main
-        withContext(Dispatchers.Main) {
-            cpuUsageTextView.text = "CPU Usage: $cpuUsage%"
-            ramUsageTextView.text = "RAM Usage: ${100 - percentAvail}%"
-            progressRam.progress = 100 - percentAvail
-
-//            findViewById<TextView>(R.id.tvBatteryInfo).text = "Nível da Bateria: ${batteryInfo.first}%\nStatus: ${batteryInfo.second}"
-            findViewById<TextView>(R.id.tvBatteryInfo).text = "Status da Bateria: ${batteryInfo}"
-            findViewById<TextView>(R.id.tvStorageInfo).text = "Armazenamento Disponível: ${storageInfo.first}MB\nArmazenamento Total: ${storageInfo.second}MB"
-        }
-    }
 
 
 
@@ -187,35 +140,7 @@ class MainActivity : AppCompatActivity() {
 //        return Pair(batteryPct ?: 0, batteryStatusString)
 //    }
 
-    private fun getBatteryInfo(): String {
-        val batteryStatus: Intent? = IntentFilter(Intent.ACTION_BATTERY_CHANGED).let { ifilter ->
-            registerReceiver(null, ifilter)
-        }
 
-        val status: Int = batteryStatus?.getIntExtra(BatteryManager.EXTRA_STATUS, -1) ?: -1
-        val batteryStatusString = when (status) {
-            BatteryManager.BATTERY_STATUS_CHARGING -> "Carregando"
-            BatteryManager.BATTERY_STATUS_DISCHARGING -> "Descarregando"
-            BatteryManager.BATTERY_STATUS_FULL -> "Carregada"
-            BatteryManager.BATTERY_STATUS_NOT_CHARGING -> "Não Carregando"
-            else -> "Desconhecido"
-        }
-
-        return batteryStatusString
-    }
-
-    //STORAGE
-    private fun getStorageInfo(): Pair<Long, Long> {
-        val statFs = StatFs(Environment.getDataDirectory().path)
-        val availableBlocks = statFs.availableBlocksLong
-        val blockSize = statFs.blockSizeLong
-        val totalBlocks = statFs.blockCountLong
-
-        val availableSpace = (availableBlocks * blockSize) / 1048576L // Em MB
-        val totalSpace = (totalBlocks * blockSize) / 1048576L // Em MB
-
-        return Pair(availableSpace, totalSpace)
-    }
 
     //Big Files & Duplicates
     fun getFileHash(file: File): String {
