@@ -23,6 +23,7 @@ import kotlin.math.roundToInt
 
 class OptimizationService : Service() {
 
+    private var isRunning = false
     private lateinit var processKiller: ProcessKiller
 //    private lateinit var cpuMonitor: CpuMonitor
 //    private lateinit var ramMonitor: RamMonitor
@@ -48,15 +49,30 @@ class OptimizationService : Service() {
         startOptimization()
     }
 
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        when (intent?.action) {
+            "START" -> startOptimization()
+            "STOP" -> stopOptimization()
+        }
+        return START_STICKY
+    }
+
     private fun startOptimization() {
         // Mover a lógica de otimização (CPU, RAM, arquivos) para cá
-        CoroutineScope(Dispatchers.IO).launch {
-            while (true) {
-                // Verificar CPU e RAM periodicamente
-                optimizeDevicePerformance()
-                delay(5000)
+        if (!isRunning) {
+            isRunning = true
+            CoroutineScope(Dispatchers.IO).launch {
+                while (true) {
+                    // Verificar CPU e RAM periodicamente
+                    optimizeDevicePerformance()
+                    delay(5000)
+                }
             }
         }
+    }
+
+    private fun stopOptimization() {
+        isRunning = false
     }
 
     private suspend fun optimizeDevicePerformance() {

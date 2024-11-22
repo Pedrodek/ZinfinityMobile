@@ -2,10 +2,13 @@ package com.example.zinfinity
 
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.Color
 import android.os.BatteryManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.os.StatFs
+import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
@@ -36,6 +39,11 @@ class IntelActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_intel)
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.statusBarColor = Color.TRANSPARENT
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        }
+
         cpuUsageTextView = findViewById(R.id.tvCpuUsage)
         ramUsageTextView = findViewById(R.id.tvRamUsage)
 
@@ -44,9 +52,6 @@ class IntelActivity : AppCompatActivity() {
 
         cpuMonitor = CpuMonitor(this)
         ramMonitor = RamMonitor(this)
-
-
-
 
         startPeriodicUpdates()
     }

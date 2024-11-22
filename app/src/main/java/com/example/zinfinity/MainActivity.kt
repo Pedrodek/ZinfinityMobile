@@ -4,8 +4,11 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
+import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
@@ -13,7 +16,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.zinfinity.background.OptimizationService
-import com.example.zinfinity.background.scheduleOptimizationJob
 import com.example.zinfinity.hardwareMonitors.ProcessKiller
 import kotlinx.coroutines.*
 import java.io.File
@@ -21,17 +23,15 @@ import java.io.FileNotFoundException
 import java.security.MessageDigest
 
 
-
 class MainActivity : AppCompatActivity() {
-
 
     private lateinit var Lgpdbutton: Button
     private lateinit var Intelbutton: Button
     private lateinit var killButton: Button
     private lateinit var doubleButton: Button
-    private lateinit var tvFiles: TextView
-
+    //private lateinit var tvFiles: TextView
     private lateinit var processKiller: ProcessKiller
+    private var isServiceRunning = false
 
 
     private val REQUEST_CODE = 100 // Código de solicitação único
@@ -44,7 +44,13 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
 
-        tvFiles = findViewById(R.id.tvFiles)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.statusBarColor = Color.TRANSPARENT
+            window.decorView.systemUiVisibility =
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        }
+
+        //tvFiles = findViewById(R.id.tvFiles)
 
         Lgpdbutton = findViewById(R.id.Lgpdbutton)
         Intelbutton = findViewById(R.id.Intelbutton)
@@ -64,35 +70,47 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        // Set the KILL button click listener
+
+        killButton.text = "Iniciar"
+
         killButton.setOnClickListener {
-            processKiller.killBackgroundProcesses()
-            keepCpuAwake(this)
+            if (isServiceRunning) {
+                stopOptimizationService()
+                killButton.text = "Iniciar"
+            } else {
+                startOptimizationService()
+                killButton.text = "Parar"
+            }
+            isServiceRunning = !isServiceRunning
         }
+
         requestStoragePermission()
         doubleButton.setOnClickListener {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), REQUEST_CODE)
             iterateFilesAndHashInBackground(rootDirectory)
         }
 
-        startForegroundService()
-        scheduleOptimizationJob(this)
     }
 
-    private fun startForegroundService() {
+    private fun startOptimizationService() {
         val intent = Intent(this, OptimizationService::class.java)
-        startForegroundService(intent)
+        intent.action = "START"
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(intent)
+        } else {
+            startService(intent)
+        }
     }
 
-
-
-
-
+    private fun stopOptimizationService() {
+        val intent = Intent(this, OptimizationService::class.java)
+        intent.action = "STOP"
+        stopService(intent)
+    }
 
     override fun onDestroy() {
         super.onDestroy()
         coroutineScope.coroutineContext.cancelChildren() // Cancel coroutines to prevent leaks
-
     }
 
     override fun onPause() {
@@ -233,8 +251,6 @@ class MainActivity : AppCompatActivity() {
                 arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
                 REQUEST_CODE
             )
-        } else {
-            // Permissão já concedida, você pode continuar com a funcionalidade que requer a permissão
         }
     }
 

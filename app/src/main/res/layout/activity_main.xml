@@ -7,9 +7,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000000"
+    android:foreground="@android:color/transparent"
     tools:context=".MainActivity">
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="731dp"
@@ -23,7 +25,7 @@
 
     <Button
         android:id="@+id/KILL"
-        android:layout_width="215dp"
+        android:layout_width="235dp"
         android:layout_height="61dp"
         android:layout_marginStart="101dp"
         android:layout_marginTop="20dp"
@@ -32,110 +34,94 @@
         android:backgroundTint="#9C27B0"
         android:text="CPU Awake"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.65"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button2" />
 
     <Button
         android:id="@+id/button2"
-        android:layout_width="215dp"
+        android:layout_width="235dp"
         android:layout_height="61dp"
         android:layout_marginStart="101dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="95dp"
         android:background="#749C27B0"
-        android:backgroundTint="#A000E4"
         android:text="Scan Test"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.65"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Intelbutton" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="284dp"
-        android:layout_marginBottom="8dp"
-        android:text="DEV ALPHA BUILD"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <TextView
-        android:id="@+id/tvFiles"
-        android:layout_width="192dp"
-        android:layout_height="56dp"
-        android:layout_marginTop="208dp"
-        android:layout_marginEnd="208dp"
-        android:text="TextView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button2" />
 
     <Button
         android:id="@+id/Lgpdbutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="252dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginStart="256dp"
+        android:layout_marginBottom="54dp"
+        android:background="#B09D00FF"
         android:text="LGPD"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
         android:id="@+id/imageView2"
         android:layout_width="74dp"
         android:layout_height="66dp"
-        android:layout_marginTop="108dp"
-        android:layout_marginEnd="76dp"
+        android:layout_marginEnd="272dp"
+        android:layout_marginBottom="44dp"
+        app:circularflow_angles="60"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/KILL"
         app:srcCompat="@mipmap/ic_acess2_round" />
-
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="210dp"
-        android:layout_height="194dp"
-        android:layout_marginEnd="100dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@mipmap/white_z_foreground" />
-
-    <ImageButton
-        android:id="@+id/imageButton5"
-        android:layout_width="71dp"
-        android:layout_height="67dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="68dp"
-        android:background="#00FFFFFF"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@mipmap/burger_foreground" />
 
     <ImageView
         android:id="@+id/imageView5"
         android:layout_width="371dp"
         android:layout_height="8dp"
-        android:layout_marginTop="167dp"
         android:layout_marginEnd="6dp"
+        android:layout_marginBottom="28dp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.588"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/imageView"
         app:srcCompat="@color/white" />
 
     <Button
         android:id="@+id/Intelbutton"
-        android:layout_width="215dp"
+        android:layout_width="235dp"
         android:layout_height="61dp"
         android:layout_marginStart="101dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="36dp"
         android:layout_marginEnd="95dp"
-        android:background="#749C27B0"
-        android:text="Informações do Sistema"
+        android:background="#7400FF19"
+        android:text="@string/intel"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.65"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView4" />
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="228dp"
+        android:layout_height="217dp"
+        android:layout_marginTop="-24dp"
+        android:layout_marginEnd="92dp"
+        android:importantForAccessibility="no"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@mipmap/white_z_foreground" />
+
+    <ImageButton
+        android:id="@+id/imageButton8"
+        android:layout_width="81dp"
+        android:layout_height="72dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="59dp"
+        android:contentDescription="@string/sidebar"
+        android:background="#00FFFFFF"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/burger" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
