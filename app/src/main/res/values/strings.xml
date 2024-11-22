@@ -6,12 +6,11 @@
     <string name="sidebar">Botão para barra lateral</string>
     <string name="intel">Informações do Sistema</string>
 
-    <string name="lorem_ipsum">
-        malesuada fames ac turpis egestas. In volutpat arcu ut felis sagittis, in finibus massa
-        gravida. Pellentesque id tellus orci. Integer dictum, lorem sed efficitur ullamcorper,
-        libero justo consectetur ipsum, in mollis nisl ex sed nisl. Donec maximus ullamcorper
-        sodales. Praesent bibendum rhoncus tellus nec feugiat. In a ornare nulla. Donec rhoncus
-        libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
-        vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
+    <string name="lgpd">
+        Este App pode coletar as seguintes informações do seu dispositivo:
+        - Cache dos aplicativos.
+        - Informações de hardware (CPU, RAM e etc).
+        - Informações sobre o software do celular.
+        Tenha em mente que o aplicativo coleta e usa esses dados para melhorar a performance do seu dispositivo e fazer com que ele funcione de forma mais eficiente, esses dados nunca são enviados ou armazenados fora do seu dispositivo.
     </string>
 </resources>

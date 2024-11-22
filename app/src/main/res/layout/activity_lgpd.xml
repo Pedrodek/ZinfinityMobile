@@ -10,22 +10,41 @@
 
     <TextView
         android:id="@+id/tvLgpd"
-        android:layout_width="276dp"
-        android:layout_height="341dp"
-        android:layout_marginStart="64dp"
-        android:layout_marginBottom="264dp"
-        android:text="TextView"
+        android:layout_width="279dp"
+        android:layout_height="276dp"
+        android:layout_marginTop="200dp"
+        android:layout_marginEnd="64dp"
+        android:lineSpacingExtra="3dp"
+        android:text="@string/lgpd"
+        android:textAlignment="center"
         android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:textSize="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="172dp"
+        android:layout_height="42dp"
+        android:layout_marginStart="119dp"
+        android:layout_marginTop="132dp"
+        android:layout_marginEnd="120dp"
+        android:text="Aviso LGPD"
+        android:textColor="@color/white"
+        android:textSize="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/back"
-        android:layout_width="110dp"
-        android:layout_height="43dp"
-        android:layout_marginStart="132dp"
-        android:layout_marginTop="492dp"
-        android:text="Voltar"
+        android:layout_width="123dp"
+        android:layout_height="53dp"
+        android:layout_marginStart="140dp"
+        android:layout_marginTop="520dp"
+        android:text="Entendido"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

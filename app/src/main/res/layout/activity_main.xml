@@ -1,127 +1,153 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+
+
+<androidx.drawerlayout.widget.DrawerLayout
+xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/drawer_layout"
+android:layout_width="match_parent"
+android:layout_height="match_parent">
+
+<!-- Conteúdo principal da tela -->
+<LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000000"
-    android:foreground="@android:color/transparent"
-    tools:context=".MainActivity">
+    android:orientation="vertical">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="731dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent"
+        android:background="#000000"
+        android:foreground="@android:color/transparent"
+        tools:context=".MainActivity">
 
-    <!-- res/layout/activity_main.xml -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="731dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- res/layout/activity_main.xml -->
 
 
-    <Button
-        android:id="@+id/KILL"
-        android:layout_width="235dp"
-        android:layout_height="61dp"
-        android:layout_marginStart="101dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="95dp"
-        android:background="#749C27B0"
-        android:backgroundTint="#9C27B0"
-        android:text="CPU Awake"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.65"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button2" />
+        <Button
+            android:id="@+id/KILL"
+            android:layout_width="235dp"
+            android:layout_height="61dp"
+            android:layout_marginStart="101dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="95dp"
+            android:background="#749C27B0"
+            android:backgroundTint="#9C27B0"
+            android:text="Ligar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.65"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/Logcat" />
 
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="235dp"
-        android:layout_height="61dp"
-        android:layout_marginStart="101dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="95dp"
-        android:background="#749C27B0"
-        android:text="Scan Test"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.65"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Intelbutton" />
+        <Button
+            android:id="@+id/Logcat"
+            android:layout_width="235dp"
+            android:layout_height="61dp"
+            android:layout_marginStart="101dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="95dp"
+            android:background="#749C27B0"
+            android:text="Logcat"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.65"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/Intelbutton" />
 
-    <Button
-        android:id="@+id/Lgpdbutton"
+        <Button
+            android:id="@+id/Lgpdbutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="256dp"
+            android:layout_marginBottom="54dp"
+            android:background="#B09D00FF"
+            android:text="LGPD"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="74dp"
+            android:layout_height="66dp"
+            android:layout_marginEnd="272dp"
+            android:layout_marginBottom="44dp"
+            app:circularflow_angles="60"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@mipmap/ic_acess2_round" />
+
+        <ImageView
+            android:id="@+id/imageView5"
+            android:layout_width="371dp"
+            android:layout_height="8dp"
+            android:layout_marginEnd="6dp"
+            android:layout_marginBottom="28dp"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.588"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@color/white" />
+
+        <Button
+            android:id="@+id/Intelbutton"
+            android:layout_width="235dp"
+            android:layout_height="61dp"
+            android:layout_marginStart="101dp"
+            android:layout_marginTop="36dp"
+            android:layout_marginEnd="95dp"
+            android:background="#7400FF19"
+            android:text="@string/intel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.65"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView4" />
+
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="228dp"
+            android:layout_height="217dp"
+            android:layout_marginTop="-24dp"
+            android:layout_marginEnd="92dp"
+            android:importantForAccessibility="no"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@mipmap/white_z_foreground" />
+
+        <ImageButton
+            android:id="@+id/burgerbtn"
+            android:layout_width="81dp"
+            android:layout_height="72dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="59dp"
+            android:contentDescription="@string/sidebar"
+            android:background="#00FFFFFF"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/burger" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
+
+<!-- Navigation Drawer (sidebar) -->
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/navigation_view"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="256dp"
-        android:layout_marginBottom="54dp"
-        android:background="#B09D00FF"
-        android:text="LGPD"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="74dp"
-        android:layout_height="66dp"
-        android:layout_marginEnd="272dp"
-        android:layout_marginBottom="44dp"
-        app:circularflow_angles="60"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@mipmap/ic_acess2_round" />
-
-    <ImageView
-        android:id="@+id/imageView5"
-        android:layout_width="371dp"
-        android:layout_height="8dp"
-        android:layout_marginEnd="6dp"
-        android:layout_marginBottom="28dp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView4"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.588"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@color/white" />
-
-    <Button
-        android:id="@+id/Intelbutton"
-        android:layout_width="235dp"
-        android:layout_height="61dp"
-        android:layout_marginStart="101dp"
-        android:layout_marginTop="36dp"
-        android:layout_marginEnd="95dp"
-        android:background="#7400FF19"
-        android:text="@string/intel"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.65"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView4" />
-
-    <ImageView
-        android:id="@+id/imageView4"
-        android:layout_width="228dp"
-        android:layout_height="217dp"
-        android:layout_marginTop="-24dp"
-        android:layout_marginEnd="92dp"
-        android:importantForAccessibility="no"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@mipmap/white_z_foreground" />
-
-    <ImageButton
-        android:id="@+id/imageButton8"
-        android:layout_width="81dp"
-        android:layout_height="72dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="59dp"
-        android:contentDescription="@string/sidebar"
-        android:background="#00FFFFFF"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/burger" />
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:headerLayout="@layout/nav_header"
+        app:menu="@menu/drawer_menu" />
+</androidx.drawerlayout.widget.DrawerLayout>

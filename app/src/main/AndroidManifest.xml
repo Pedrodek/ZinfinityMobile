@@ -23,6 +23,9 @@
         android:theme="@style/Theme.Zinfinity"
         tools:targetApi="31">
         <activity
+            android:name=".LogcatActivity"
+            android:exported="false" />
+        <activity
             android:name=".IntelActivity"
             android:exported="false"
             android:theme="@style/Theme.Zinfinity" />
@@ -41,9 +44,6 @@
             android:name=".background.OptimizationService"
             android:foregroundServiceType="location|dataSync|connectedDevice"
             android:permission="android.permission.FOREGROUND_SERVICE" />
-        <service
-            android:name=".background.OptimizationJobService"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 
 </manifest>

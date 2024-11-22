@@ -41,7 +41,7 @@ class OptimizationService : Service() {
         val notification = Notification.Builder(this, "OptimizationService")
             .setContentTitle("Mantendo uma boa performance")
             .setContentText("Executando otimizações no dispositivo em segundo plano.")
-            .setSmallIcon(R.mipmap.ic_launcher_foreground)
+            .setSmallIcon(R.mipmap.white_z)
             .build()
 
         startForeground(1, notification)

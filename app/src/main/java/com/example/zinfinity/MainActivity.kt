@@ -1,6 +1,8 @@
 package com.example.zinfinity
 
 import android.Manifest
+import android.app.AlertDialog
+import android.content.ClipData.Item
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -10,13 +12,17 @@ import android.os.Bundle
 import android.os.PowerManager
 import android.view.View
 import android.widget.Button
-import android.widget.TextView
+import android.widget.ImageButton
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import com.example.zinfinity.background.OptimizationService
 import com.example.zinfinity.hardwareMonitors.ProcessKiller
+import com.google.android.material.navigation.NavigationView
 import kotlinx.coroutines.*
 import java.io.File
 import java.io.FileNotFoundException
@@ -27,12 +33,19 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var Lgpdbutton: Button
     private lateinit var Intelbutton: Button
+    private lateinit var Logcat: Button
     private lateinit var killButton: Button
+    private lateinit var extraButton: View
     private lateinit var doubleButton: Button
+    private lateinit var burgerbtn: ImageButton
     //private lateinit var tvFiles: TextView
     private lateinit var processKiller: ProcessKiller
     private var isServiceRunning = false
+    private var isActive: Boolean = false
 
+    private var backgroundJob: Job? = null
+
+    private lateinit var drawerLayout: DrawerLayout
 
     private val REQUEST_CODE = 100 // Código de solicitação único
 
@@ -50,13 +63,22 @@ class MainActivity : AppCompatActivity() {
                 View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
         }
 
+        val sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
+        sharedPreferences.edit().putBoolean("hasShownPopup", false).apply()
+
+        drawerLayout = findViewById(R.id.drawer_layout)
+//        extraButton =  findViewById(R.id.Extra)
+
+        burgerbtn = findViewById(R.id.burgerbtn)
+        Logcat = findViewById(R.id.Logcat)
+
         //tvFiles = findViewById(R.id.tvFiles)
 
         Lgpdbutton = findViewById(R.id.Lgpdbutton)
         Intelbutton = findViewById(R.id.Intelbutton)
 
         killButton = findViewById(R.id.KILL)
-        doubleButton = findViewById(R.id.button2)
+        doubleButton = findViewById(R.id.Logcat)
 
         processKiller = ProcessKiller(this)
 
@@ -78,6 +100,7 @@ class MainActivity : AppCompatActivity() {
                 stopOptimizationService()
                 killButton.text = "Iniciar"
             } else {
+                checkAndShowPopup()
                 startOptimizationService()
                 killButton.text = "Parar"
             }
@@ -85,9 +108,47 @@ class MainActivity : AppCompatActivity() {
         }
 
         requestStoragePermission()
-        doubleButton.setOnClickListener {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), REQUEST_CODE)
-            iterateFilesAndHashInBackground(rootDirectory)
+//        doubleButton.setOnClickListener {
+//            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), REQUEST_CODE)
+//            iterateFilesAndHashInBackground(rootDirectory)
+//        }
+
+        Logcat.setOnClickListener {
+
+            val intent = Intent(this, LogcatActivity::class.java)
+            startActivity(intent)
+        }
+
+        burgerbtn.setOnClickListener {
+            if (!drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                drawerLayout.openDrawer(GravityCompat.START)
+            }
+        }
+
+        val navigationView: NavigationView = findViewById(R.id.navigation_view)
+        navigationView.setNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.Extra -> {
+                    Toast.makeText(this, "Home clicked", Toast.LENGTH_SHORT).show()
+                    if (!isActive) {
+                        isActive = true
+                        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), REQUEST_CODE)
+                        iterateFilesAndHashInBackground(rootDirectory)
+                    } else {
+                        isActive = false
+                        backgroundJob?.cancel()
+                    }
+
+                }
+//                R.id.nav_settings -> {
+//                    Toast.makeText(this, "Settings clicked", Toast.LENGTH_SHORT).show()
+//                }
+//                R.id.nav_about -> {
+//                    Toast.makeText(this, "About clicked", Toast.LENGTH_SHORT).show()
+//                }
+            }
+            drawerLayout.closeDrawer(GravityCompat.START)
+            true
         }
 
     }
@@ -106,6 +167,24 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this, OptimizationService::class.java)
         intent.action = "STOP"
         stopService(intent)
+    }
+
+    private fun showPopup() {
+        AlertDialog.Builder(this)
+            .setTitle("Aviso")
+            .setMessage("Essa função derruba aplicativos e outros processos que estão ocorrendo em segundo plano a cada, aproximadamente, 5 segundos. Isso pode melhorar o desempenho do dispositivo, mas fique avisado.")
+            .setPositiveButton("Entendi") { dialog, _ -> dialog.dismiss() }
+            .show()
+    }
+
+    private fun checkAndShowPopup() {
+        val sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
+        val hasShownPopup = sharedPreferences.getBoolean("hasShownPopup", false)
+
+        if (!hasShownPopup) {
+            showPopup()
+            sharedPreferences.edit().putBoolean("hasShownPopup", true).apply()
+        }
     }
 
     override fun onDestroy() {
@@ -175,9 +254,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun iterateFilesAndHashInBackground(dir: File) {
-        coroutineScope.launch(Dispatchers.IO) {
-            iterateFilesAndHash(dir)
-            delay(200)
+        backgroundJob = coroutineScope.launch(Dispatchers.IO) {
+            try {
+                iterateFilesAndHash(dir)
+                delay(200)
+            } catch (e: CancellationException) {
+                println("Processo foi interrompido.")
+            }
         }
     }
 //------------------------------------------------------------------------------------------------------------------
