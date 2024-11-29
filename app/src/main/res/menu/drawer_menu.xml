@@ -4,6 +4,7 @@
         <menu>
         </menu>
     </item>
+    <item android:title="Início" android:id="@+id/Inicio"></item>
     <item android:title="Extra" android:id="@+id/Extra"></item>
 <!--    <item-->
 <!--        android:id="@+id/nav_home"-->

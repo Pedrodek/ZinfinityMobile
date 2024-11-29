@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:gravity="center"
     android:padding="16dp"
-    android:background="?attr/colorPrimary">
+    android:background="#7700FF">
 
     <TextView
         android:id="@+id/username"
@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:text="Zinfinity"
-        android:textColor="@android:color/white"
+        android:textColor="#FFFFFF"
         android:textStyle="bold"
         android:textSize="50dp" />
 

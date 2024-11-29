@@ -23,6 +23,9 @@
         android:theme="@style/Theme.Zinfinity"
         tools:targetApi="31">
         <activity
+            android:name=".ExtraActivity"
+            android:exported="false" />
+        <activity
             android:name=".LogcatActivity"
             android:exported="false" />
         <activity

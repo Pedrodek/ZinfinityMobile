@@ -2,6 +2,9 @@ package com.example.zinfinity
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.AlertDialog
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.MotionEvent
@@ -75,6 +78,7 @@ class LogcatActivity : AppCompatActivity() {
         map.setOnClickListener{
             if (!isActive) {
                 isActive = true
+                checkAndShowPopup()
                 map.text = "Interromper mapeamento"
                 ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), REQUEST_CODE)
                 iterateFilesAndHashInBackground(rootDirectory)
@@ -92,8 +96,12 @@ class LogcatActivity : AppCompatActivity() {
         val navigationView: NavigationView = findViewById(R.id.navigation_view)
         navigationView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
+                R.id.Inicio -> {
+                    finish()
+                }
                 R.id.Extra -> {
-                    Toast.makeText(this, "Home clicked", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, ExtraActivity::class.java)
+                    startActivity(intent)
 
                 }
 //                R.id.nav_settings -> {
@@ -112,8 +120,6 @@ class LogcatActivity : AppCompatActivity() {
             CoroutineScope(Dispatchers.IO).launch {
                 try {
 
-                    Runtime.getRuntime().exec("logcat -c")
-
                     val process = Runtime.getRuntime().exec("logcat")
                     val bufferedReader = process.inputStream.bufferedReader()
 
@@ -130,7 +136,6 @@ class LogcatActivity : AppCompatActivity() {
         }
 
         captureLogcatInRealTime { newLog ->
-
             logFile.appendText("$newLog\n")
             runOnUiThread {
                 val logs = logFile.readLines().takeLast(40).joinToString("\n")
@@ -148,6 +153,10 @@ class LogcatActivity : AppCompatActivity() {
                 }
             }
         }
+
+
+        val sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
+        sharedPreferences.edit().putBoolean("hasShownPopup", false).apply()
     }
 
     override fun onDestroy() {
@@ -251,6 +260,27 @@ class LogcatActivity : AppCompatActivity() {
             sizeInGb >= 1 -> String.format("%.2f GB", sizeInGb)
             sizeInMb >= 1 -> String.format("%.2f MB", sizeInMb)
             else -> String.format("%.2f KB", sizeInKb)
+        }
+    }
+
+
+
+    private fun showPopup() {
+        AlertDialog.Builder(this)
+            .setTitle("Aviso")
+            .setMessage("Essa função pode ser um pouco intensiva. Ela listará TODOS os arquivos que ela encontrar e ter acesso. Lembre de desliga-lá! Se não a performance pode ser afetada.")
+            .setPositiveButton("Entendi") { dialog, _ -> dialog.dismiss() }
+            .setNegativeButton("Cancelar") { dialog, _ -> isActive = false; stopHashingProcess(); map.text = "Mapear" }
+            .show()
+    }
+
+    private fun checkAndShowPopup() {
+        val sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
+        val hasShownPopup = sharedPreferences.getBoolean("hasShownPopup", false)
+
+        if (!hasShownPopup) {
+            showPopup()
+            sharedPreferences.edit().putBoolean("hasShownPopup", true).apply()
         }
     }
 }

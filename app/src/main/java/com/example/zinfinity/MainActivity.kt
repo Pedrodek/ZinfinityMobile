@@ -129,7 +129,8 @@ class MainActivity : AppCompatActivity() {
         navigationView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.Extra -> {
-                    Toast.makeText(this, "Home clicked", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, ExtraActivity::class.java)
+                    startActivity(intent)
 
                 }
 //                R.id.nav_settings -> {

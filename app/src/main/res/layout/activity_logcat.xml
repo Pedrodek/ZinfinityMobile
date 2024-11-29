@@ -64,6 +64,7 @@ android:layout_height="match_parent">
                 android:id="@+id/logTextView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:textColor="@color/white"
                 android:text="logTextView" />
 
         </android.widget.ScrollView>

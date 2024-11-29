@@ -1,10 +1,11 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.Zinfinity" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <!-- Tema Claro -->
+    <style name="Base.Theme.Zinfinity" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Personalizações para o tema claro -->
         <item name="android:statusBarColor">@android:color/transparent</item>
-
+        <item name="android:windowBackground">@color/white</item>
+        <item name="android:textColor">@color/black</item>
     </style>
 
     <style name="Theme.Zinfinity" parent="Base.Theme.Zinfinity" />
