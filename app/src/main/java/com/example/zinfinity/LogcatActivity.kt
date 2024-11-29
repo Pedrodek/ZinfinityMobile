@@ -1,8 +1,10 @@
 package com.example.zinfinity
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.view.MotionEvent
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
@@ -43,9 +45,11 @@ class LogcatActivity : AppCompatActivity() {
 
     private val REQUEST_CODE = 100 // Código de solicitação único
 
-    private val coroutineScope = CoroutineScope(Dispatchers.Main + Job())
+    private var isTextViewPressed = false
+
     val rootDirectory = File("/") // Diretório raiz do dispositivo (use "/storage/emulated/0" para armazenamento interno)
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -71,13 +75,13 @@ class LogcatActivity : AppCompatActivity() {
         map.setOnClickListener{
             if (!isActive) {
                 isActive = true
-                map.text = "Mapear"
+                map.text = "Interromper mapeamento"
                 ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), REQUEST_CODE)
                 iterateFilesAndHashInBackground(rootDirectory)
             } else {
                 isActive = false
-                map.text = "Interromper mapeamento"
-                backgroundJob?.cancel() // Isso ainda n funciona
+                stopHashingProcess()
+                map.text = "Mapear"
             }
         }
 
@@ -107,6 +111,9 @@ class LogcatActivity : AppCompatActivity() {
         fun captureLogcatInRealTime(onNewLog: (String) -> Unit) {
             CoroutineScope(Dispatchers.IO).launch {
                 try {
+
+                    Runtime.getRuntime().exec("logcat -c")
+
                     val process = Runtime.getRuntime().exec("logcat")
                     val bufferedReader = process.inputStream.bufferedReader()
 
@@ -122,14 +129,11 @@ class LogcatActivity : AppCompatActivity() {
             }
         }
 
-
-
-
         captureLogcatInRealTime { newLog ->
-            logFile.appendText("$newLog\n")
 
+            logFile.appendText("$newLog\n")
             runOnUiThread {
-                val logs = logFile.readLines().takeLast(200).joinToString("\n")
+                val logs = logFile.readLines().takeLast(40).joinToString("\n")
                 logTextView.text = logs
 
                 // Rolar automaticamente para o final
@@ -146,8 +150,16 @@ class LogcatActivity : AppCompatActivity() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        logTextView.text = "-"
+        if (logFile.exists()) {
+            logFile.delete()
+        }
+    }
+
     //Big Files & Duplicates
-    fun getFileHash(file: File): String {
+    private fun getFileHash(file: File): String {
         val digest = MessageDigest.getInstance("MD5")
         file.inputStream().use { inputStream ->
             val buffer = ByteArray(1024)
@@ -160,27 +172,47 @@ class LogcatActivity : AppCompatActivity() {
         return hashBytes.joinToString("") { "%02x".format(it) }
     }
 
-    fun iterateFilesAndHashInBackground(dir: File) {
-        backgroundJob = coroutineScope.launch(Dispatchers.IO) {
+    private fun iterateFilesAndHashInBackground(dir: File) {
+        // Cancela o job anterior, se estiver ativo
+        backgroundJob?.cancel()
+
+        // Inicia um novo job
+        backgroundJob = CoroutineScope(Dispatchers.IO).launch {
             try {
-                iterateFilesAndHash(dir)
-                delay(200)
+                iterateFilesAndHash(dir) // Certifique-se de que esta função verifica o cancelamento
+                delay(200) // Este delay respeita o cancelamento automaticamente
             } catch (e: CancellationException) {
-                println("Processo foi interrompido.")
+                println("Processo foi interrompido.") // Log do cancelamento
+            } catch (e: Exception) {
+                println("Erro inesperado: ${e.message}")
             }
         }
     }
 
-    fun iterateFilesAndHash(dir: File) {
+    private fun stopHashingProcess() {
+        // Cancela o job
+        backgroundJob?.cancel()
+        backgroundJob = null
+        println("Operação cancelada.")
+    }
+
+
+    private fun iterateFilesAndHash(dir: File) {
         // Listar todos os arquivos e diretórios dentro do diretório atual
         val files = dir.listFiles()
 
         files?.forEach { file ->
             try {
+                // Verifica se a coroutine foi cancelada
+                if (!isActive) {
+                    println("Processo interrompido antes de acessar ${file.absolutePath}")
+                    throw CancellationException()
+                }
+
                 // Checar se temos permissão para ler o arquivo ou diretório
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                    == PackageManager.PERMISSION_GRANTED) {
-
+                    == PackageManager.PERMISSION_GRANTED
+                ) {
                     if (file.isDirectory) {
                         // Se for um diretório, chamar a função recursivamente
                         iterateFilesAndHash(file)
@@ -193,6 +225,10 @@ class LogcatActivity : AppCompatActivity() {
                 } else {
                     println("Permissão negada para acessar ${file.absolutePath}")
                 }
+            } catch (e: CancellationException) {
+                // Log adicional para indicar cancelamento
+                println("Iteração cancelada: ${file.absolutePath}")
+                throw e // Repassa o cancelamento para encerrar a coroutine
             } catch (e: SecurityException) {
                 // Ignorar diretórios ou arquivos que não podem ser acessados por falta de permissão
                 println("Acesso negado a: ${file.absolutePath}, erro de permissão: ${e.message}")
@@ -206,7 +242,7 @@ class LogcatActivity : AppCompatActivity() {
         }
     }
 
-    fun getFileSize(sizeInBytes: Long): String {
+    private fun getFileSize(sizeInBytes: Long): String {
         val sizeInKb = sizeInBytes / 1024.0
         val sizeInMb = sizeInKb / 1024.0
         val sizeInGb = sizeInMb / 1024.0
@@ -215,18 +251,6 @@ class LogcatActivity : AppCompatActivity() {
             sizeInGb >= 1 -> String.format("%.2f GB", sizeInGb)
             sizeInMb >= 1 -> String.format("%.2f MB", sizeInMb)
             else -> String.format("%.2f KB", sizeInKb)
-        }
-    }
-
-    private fun requestStoragePermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-            != PackageManager.PERMISSION_GRANTED) {
-
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-                REQUEST_CODE
-            )
         }
     }
 }
